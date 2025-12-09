@@ -370,7 +370,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file }) => {
         const docFields = fields;
 
         try {
-            const response = await fetch('http://localhost:5000/api/pdf/sign', {
+            const response = await fetch('/api/pdf/sign', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
