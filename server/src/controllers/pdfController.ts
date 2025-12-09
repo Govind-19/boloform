@@ -157,7 +157,10 @@ export const signPdf = async (req: Request, res: Response) => {
             debug: {
                 receivedBase64Length: pdfBase64 ? pdfBase64.length : 0,
                 usingFallback: !pdfBase64,
-                pdfBufferLength: pdfBuffer ? pdfBuffer.length : 0
+                pdfBufferLength: pdfBuffer ? pdfBuffer.length : 0,
+                bodyKeys: Object.keys(req.body),
+                contentType: req.headers['content-type'],
+                bodyType: typeof req.body
             }
         });
 

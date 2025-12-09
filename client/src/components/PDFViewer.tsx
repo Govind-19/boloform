@@ -373,6 +373,8 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file }) => {
             // Fetch the PDF file and convert to Base64
             const pdfResponse = await fetch(file); // Assuming 'file' is the URL or path to the PDF
             const pdfBlob = await pdfResponse.blob();
+            console.log("Fetched PDF Blob Type:", pdfBlob.type, "Size:", pdfBlob.size);
+
             const pdfBase64 = await new Promise<string>((resolve) => {
                 const reader = new FileReader();
                 reader.onloadend = () => {
@@ -435,9 +437,12 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file }) => {
                             <div className="hash-block">{result.signedHash}</div>
 
                             {result.debug && (
-                                <div style={{ marginTop: '10px', fontSize: '0.8em', color: '#999' }}>
+                                <div style={{ marginTop: '10px', fontSize: '0.8em', color: '#999', wordBreak: 'break-all' }}>
                                     Debug: Sent {pdfBase64.length} chars. Server received {result.debug.receivedBase64Length}.
                                     Fallback Used: {String(result.debug.usingFallback)}.
+                                    Body Keys: {JSON.stringify(result.debug.bodyKeys)}.
+                                    Type: {result.debug.contentType}.
+                                    Blob Type: {pdfBlob.type} ({pdfBlob.size}).
                                 </div>
                             )}
                         </div>
