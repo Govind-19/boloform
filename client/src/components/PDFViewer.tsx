@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import {
     DndContext,
@@ -13,11 +13,11 @@ import {
     closestCenter,
     pointerWithin,
     rectIntersection,
-    getFirstCollision,
+
 } from '@dnd-kit/core';
 import type { DragStartEvent, DragEndEvent, DragMoveEvent, CollisionDetection, UniqueIdentifier } from '@dnd-kit/core';
 import Modal from './Modal';
-import { restrictToWindowEdges, snapCenterToCursor } from '@dnd-kit/modifiers';
+import { restrictToWindowEdges } from '@dnd-kit/modifiers';
 import Sidebar from './Sidebar';
 import type { FieldType } from './Sidebar';
 import PlacedField from './PlacedField';
@@ -452,7 +452,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file }) => {
                         }}
                     >
                         <Document file={file} onLoadSuccess={onDocumentLoadSuccess} className="pdf-document">
-                            {Array.from(new Array(numPages), (el, index) => {
+                            {Array.from(new Array(numPages), (_, index) => {
                                 const pageNumber = index + 1;
                                 const pageFields = fields.filter(f => f.page === pageNumber);
                                 const isPageOver = overPageId === `page-${pageNumber}`;
