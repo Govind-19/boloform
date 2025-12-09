@@ -1,0 +1,555 @@
+/* ===================================
+   App Layout
+   =================================== */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: var(--gray-100);
+}
+
+/* ===================================
+   Header Styles
+   =================================== */
+.app-header {
+  background: linear-gradient(to right, var(--gray-50), #ffffff);
+  border-bottom: 1px solid var(--gray-200);
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  box-shadow: var(--shadow-sm);
+  z-index: var(--z-sticky);
+  position: relative;
+}
+
+.app-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(to right, var(--primary-500), var(--primary-300), transparent);
+  opacity: 0.5;
+}
+
+.app-header h1 {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--gray-900);
+  letter-spacing: -0.02em;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.app-header h1::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+  border-radius: var(--radius-sm);
+}
+
+.header-subtitle {
+  font-size: var(--text-sm);
+  color: var(--gray-500);
+  font-weight: 400;
+}
+
+/* ===================================
+   Main Content Area
+   =================================== */
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ===================================
+   Sidebar Styles
+   =================================== */
+.sidebar {
+  width: 280px;
+  min-width: 280px;
+  background: linear-gradient(180deg, var(--sidebar-bg) 0%, #0c1322 100%);
+  color: var(--sidebar-text);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-6);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-dropdown);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle gradient overlay for depth */
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, rgba(59, 130, 246, 0.08) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.sidebar h3 {
+  margin-top: 0;
+  margin-bottom: var(--space-5);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--sidebar-text-muted);
+  font-weight: 600;
+  position: relative;
+  padding-bottom: var(--space-3);
+}
+
+.sidebar h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(to right, var(--primary-500), transparent);
+  border-radius: var(--radius-full);
+}
+
+/* ===================================
+   Draggable Tool Cards
+   =================================== */
+.tools-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.draggable-tool {
+  background: var(--sidebar-bg-secondary);
+  color: var(--sidebar-text);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  cursor: grab;
+  border: 1px solid var(--sidebar-border);
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.draggable-tool::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--primary-500);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.draggable-tool:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: var(--primary-500);
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.draggable-tool:hover::before {
+  opacity: 1;
+}
+
+.draggable-tool:active {
+  cursor: grabbing;
+  transform: translateX(4px) scale(0.98);
+}
+
+/* Tool dragging state */
+.draggable-tool.tool-dragging {
+  z-index: 1000;
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.4);
+}
+
+.draggable-tool .tool-icon {
+  margin-right: var(--space-3);
+  font-size: var(--text-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+}
+
+/* ===================================
+   Sign Button
+   =================================== */
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--sidebar-border);
+}
+
+.sign-button {
+  width: 100%;
+  padding: var(--space-4);
+  background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  text-transform: uppercase;
+  font-size: var(--text-sm);
+  letter-spacing: 0.05em;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+}
+
+.sign-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.sign-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+}
+
+.sign-button:hover::before {
+  left: 100%;
+}
+
+.sign-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+
+.sign-button:focus-visible {
+  outline: 2px solid var(--primary-300);
+  outline-offset: 2px;
+}
+
+/* ===================================
+   PDF Workspace
+   =================================== */
+.pdf-workspace {
+  flex: 1;
+  background: var(--gray-100);
+  overflow: auto;
+  padding: var(--space-8);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  /* Prevent vertical stretching */
+  position: relative;
+}
+
+/* Subtle pattern background */
+.pdf-workspace::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 1px 1px, var(--gray-300) 1px, transparent 0);
+  background-size: 24px 24px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ===================================
+   Viewer Layout Utility
+   =================================== */
+.viewer-layout {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* ===================================
+   Responsive Styles - Tablet (768px - 1024px)
+   =================================== */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 240px;
+    min-width: 240px;
+    padding: var(--space-4);
+  }
+
+  .draggable-tool {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+  }
+
+  .pdf-workspace {
+    padding: var(--space-6);
+  }
+}
+
+/* ===================================
+   Responsive Styles - Mobile (< 768px)
+   =================================== */
+@media (max-width: 768px) {
+  .app-header {
+    padding: var(--space-3) var(--space-4);
+    height: 56px;
+  }
+
+  .app-header h1 {
+    font-size: var(--text-lg);
+  }
+
+  .header-subtitle {
+    display: none;
+  }
+
+  .main-content {
+    flex-direction: column;
+  }
+
+  .viewer-layout {
+    flex-direction: column !important;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: 100%;
+    height: auto;
+    max-height: 140px;
+    padding: var(--space-3) var(--space-4);
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    align-items: center;
+    gap: var(--space-3);
+    border-right: none;
+    border-bottom: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(90deg, var(--sidebar-bg) 0%, #0c1322 100%);
+  }
+
+  .sidebar::before {
+    display: none;
+  }
+
+  .sidebar h3 {
+    display: none;
+  }
+
+  .sidebar h3::after {
+    display: none;
+  }
+
+  .tools-container {
+    flex-direction: row;
+    gap: var(--space-2);
+  }
+
+  .draggable-tool {
+    flex-shrink: 0;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+    white-space: nowrap;
+    border-radius: var(--radius-lg);
+  }
+
+  .draggable-tool:hover {
+    transform: translateY(-2px);
+  }
+
+  .draggable-tool .tool-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: var(--space-2);
+    font-size: var(--text-sm);
+  }
+
+  .sidebar-footer {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    flex-shrink: 0;
+  }
+
+  .sign-button {
+    width: auto;
+    white-space: nowrap;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-xs);
+  }
+
+  .pdf-workspace {
+    padding: var(--space-4);
+  }
+
+  .pdf-workspace::before {
+    background-size: 20px 20px;
+  }
+}
+
+/* ===================================
+   Responsive Styles - Small Mobile (< 480px)
+   =================================== */
+@media (max-width: 480px) {
+  .app-header {
+    padding: var(--space-2) var(--space-3);
+    height: 48px;
+  }
+
+  .app-header h1 {
+    font-size: var(--text-base);
+  }
+
+  .app-header h1::before {
+    width: 6px;
+    height: 6px;
+  }
+
+  .sidebar {
+    padding: var(--space-2) var(--space-3);
+    max-height: 120px;
+    gap: var(--space-2);
+  }
+
+  .draggable-tool {
+    padding: var(--space-2);
+    font-size: 0.7rem;
+  }
+
+  .draggable-tool .tool-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: var(--space-1);
+    font-size: var(--text-xs);
+  }
+
+  .sign-button {
+    padding: var(--space-2) var(--space-3);
+    font-size: 0.7rem;
+  }
+
+  .pdf-workspace {
+    padding: var(--space-2);
+  }
+}
+
+/* ===================================
+   Animation Keyframes
+   =================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Apply animations */
+.sidebar {
+  animation: slideInLeft 0.3s ease-out;
+}
+
+.draggable-tool {
+  animation: fadeIn 0.3s ease-out backwards;
+}
+
+.draggable-tool:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.draggable-tool:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.draggable-tool:nth-child(3) {
+  animation-delay: 0.15s;
+}
+
+.draggable-tool:nth-child(4) {
+  animation-delay: 0.2s;
+}
+
+.draggable-tool:nth-child(5) {
+  animation-delay: 0.25s;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+
+  .sidebar,
+  .draggable-tool,
+  .sign-button,
+  .sign-button::before {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* ===================================
+   Loading States
+   =================================== */
+.loading {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ===================================
+   Utility Classes
+   =================================== */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

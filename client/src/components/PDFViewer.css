@@ -1,0 +1,702 @@
+/* ===================================
+   PDF Container
+   =================================== */
+.pdf-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* box-shadow: var(--shadow-2xl); */
+  background-color: transparent;
+  /* border-radius: var(--radius-lg); */
+  /* overflow: hidden; */
+  z-index: 1;
+}
+
+/* ===================================
+   PDF Document
+   =================================== */
+.pdf-document {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ===================================
+   PDF Page Wrapper
+   =================================== */
+.pdf-page-wrapper {
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-md);
+  transition: box-shadow var(--transition-normal);
+}
+
+.pdf-page-wrapper:last-child {
+  margin-bottom: 0;
+}
+
+/* ===================================
+   PDF Page Droppable
+   =================================== */
+.pdf-page-droppable {
+  position: relative;
+  display: inline-block;
+  background: white;
+  transition:
+    box-shadow var(--transition-normal),
+    transform var(--transition-fast);
+}
+
+/* Page drop highlight - when dragging over */
+.pdf-page-droppable.drop-active {
+  box-shadow:
+    0 0 0 3px var(--primary-400),
+    0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+/* Drop indicator overlay */
+.drop-indicator {
+  position: absolute;
+  inset: 0;
+  background: rgba(59, 130, 246, 0.08);
+  border: 2px dashed var(--primary-400);
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+  z-index: 5;
+  animation: dropPulse 1s ease-in-out infinite;
+}
+
+@keyframes dropPulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* ===================================
+   Overlay Layer
+   =================================== */
+.overlay-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* ===================================
+   Draggable Field (Placed Fields)
+   =================================== */
+.draggable-field {
+  position: absolute;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(59, 130, 246, 0.08) 100%);
+  border: 2px solid var(--primary-500);
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  color: var(--primary-700);
+  font-weight: 500;
+  font-size: var(--text-xs);
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(4px);
+  transition:
+    box-shadow var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    opacity var(--transition-fast);
+  pointer-events: auto;
+  user-select: none;
+  touch-action: none;
+  min-height: 24px;
+}
+
+.draggable-field::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.draggable-field:hover,
+.draggable-field.hovered {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.15) 100%);
+  box-shadow:
+    0 4px 12px rgba(59, 130, 246, 0.25),
+    0 0 0 1px rgba(59, 130, 246, 0.1);
+  border-color: var(--primary-600);
+}
+
+.draggable-field:active {
+  cursor: grabbing;
+}
+
+.draggable-field:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px white,
+    0 0 0 4px var(--primary-500);
+}
+
+/* Field dragging state */
+.draggable-field.dragging {
+  cursor: grabbing;
+  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+  z-index: 100;
+}
+
+/* Field resizing state */
+.draggable-field.resizing {
+  cursor: se-resize;
+  box-shadow:
+    0 0 0 2px var(--primary-400),
+    0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+/* Field selected state */
+.draggable-field.selected {
+  border-color: var(--primary-600);
+  box-shadow:
+    0 0 0 2px rgba(59, 130, 246, 0.3),
+    0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+/* ===================================
+   Field Type Variations
+   =================================== */
+.draggable-field[data-type="signature"] {
+  border-style: dashed;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(34, 197, 94, 0.08) 100%);
+  border-color: var(--success-500);
+  color: var(--success-600);
+}
+
+.draggable-field[data-type="signature"]:hover,
+.draggable-field[data-type="signature"].hovered {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.15) 100%);
+  border-color: var(--success-600);
+  box-shadow:
+    0 4px 12px rgba(34, 197, 94, 0.25),
+    0 0 0 1px rgba(34, 197, 94, 0.1);
+}
+
+.draggable-field[data-type="date"] {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.08) 100%);
+  border-color: var(--warning-500);
+  color: #b45309;
+}
+
+.draggable-field[data-type="date"]:hover,
+.draggable-field[data-type="date"].hovered {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(245, 158, 11, 0.15) 100%);
+  box-shadow:
+    0 4px 12px rgba(245, 158, 11, 0.25),
+    0 0 0 1px rgba(245, 158, 11, 0.1);
+}
+
+.draggable-field[data-type="image"] {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.12) 0%, rgba(168, 85, 247, 0.08) 100%);
+  border-color: #a855f7;
+  color: #7c3aed;
+}
+
+.draggable-field[data-type="image"]:hover,
+.draggable-field[data-type="image"].hovered {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(168, 85, 247, 0.15) 100%);
+  border-color: #9333ea;
+  box-shadow:
+    0 4px 12px rgba(168, 85, 247, 0.25),
+    0 0 0 1px rgba(168, 85, 247, 0.1);
+}
+
+.draggable-field[data-type="radio"] {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.12) 0%, rgba(236, 72, 153, 0.08) 100%);
+  border-color: #ec4899;
+  color: #db2777;
+}
+
+.draggable-field[data-type="radio"]:hover,
+.draggable-field[data-type="radio"].hovered {
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.2) 0%, rgba(236, 72, 153, 0.15) 100%);
+  border-color: #db2777;
+  box-shadow:
+    0 4px 12px rgba(236, 72, 153, 0.25),
+    0 0 0 1px rgba(236, 72, 153, 0.1);
+}
+
+/* ===================================
+   Field Inner Container
+   =================================== */
+.field-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===================================
+   Field Label
+   =================================== */
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.field-label .field-icon {
+  font-size: 0.85em;
+  opacity: 0.7;
+  font-weight: 600;
+}
+
+/* ===================================
+   Field Delete Button
+   =================================== */
+.field-delete-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--error-500);
+  color: white;
+  border: 2px solid white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0;
+  z-index: 30;
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-fast);
+  box-shadow: var(--shadow-md);
+}
+
+.field-delete-btn:hover {
+  transform: scale(1.15);
+  background: var(--error-600);
+}
+
+.field-delete-btn:active {
+  transform: scale(1.05);
+}
+
+/* ===================================
+   Resize Handle
+   =================================== */
+.resize-handle {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  background: white;
+  border: 2px solid var(--primary-500);
+  border-radius: 50%;
+  right: -7px;
+  bottom: -7px;
+  cursor: se-resize;
+  z-index: 20;
+  transition:
+    transform var(--transition-fast),
+    background var(--transition-fast),
+    box-shadow var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  touch-action: none;
+}
+
+.resize-handle::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  background: var(--primary-500);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.resize-handle:hover {
+  transform: scale(1.3);
+  background: var(--primary-500);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+}
+
+.resize-handle:hover::before {
+  opacity: 1;
+  background: white;
+}
+
+.resize-handle:active {
+  transform: scale(1.2);
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+}
+
+/* Match resize handle to field type */
+.draggable-field[data-type="signature"] .resize-handle {
+  border-color: var(--success-500);
+}
+
+.draggable-field[data-type="signature"] .resize-handle:hover {
+  background: var(--success-500);
+}
+
+.draggable-field[data-type="date"] .resize-handle {
+  border-color: var(--warning-500);
+}
+
+.draggable-field[data-type="date"] .resize-handle:hover {
+  background: var(--warning-500);
+}
+
+.draggable-field[data-type="image"] .resize-handle {
+  border-color: #a855f7;
+}
+
+.draggable-field[data-type="image"] .resize-handle:hover {
+  background: #a855f7;
+}
+
+.draggable-field[data-type="radio"] .resize-handle {
+  border-color: #ec4899;
+}
+
+.draggable-field[data-type="radio"] .resize-handle:hover {
+  background: #ec4899;
+}
+
+/* ===================================
+   Drag Preview (DragOverlay)
+   =================================== */
+.drag-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3) var(--space-4);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.95) 0%, rgba(37, 99, 235, 0.95) 100%);
+  border: 2px solid var(--primary-600);
+  border-radius: var(--radius-md);
+  color: white;
+  font-weight: 500;
+  font-size: var(--text-sm);
+  box-shadow:
+    0 10px 25px rgba(59, 130, 246, 0.4),
+    0 4px 10px rgba(0, 0, 0, 0.1);
+  cursor: grabbing;
+  transform: rotate(-2deg) scale(1.05);
+  animation: dragPreviewPop 0.15s ease-out;
+  min-width: 100px;
+}
+
+/* Placed Field Preview overrides */
+.drag-preview.placed-preview {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid var(--primary-500);
+  color: var(--primary-700);
+  transform: none;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  border-radius: var(--radius-sm);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: none;
+  min-width: 0;
+  /* Remove min-width to respect actual size */
+}
+
+.drag-preview.placed-preview .field-label {
+  color: var(--primary-700);
+  width: 100%;
+  padding: var(--space-1) var(--space-2);
+}
+
+.drag-preview.placed-preview .field-icon {
+  opacity: 1;
+  color: inherit;
+}
+
+/* Placed preview type overrides */
+.drag-preview.placed-preview[data-type="signature"] {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px dashed var(--success-500);
+  background-image: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%);
+}
+
+.drag-preview.placed-preview[data-type="signature"] .field-label {
+  color: var(--success-600);
+}
+
+.drag-preview.placed-preview[data-type="date"] {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid var(--warning-500);
+  background-image: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);
+}
+
+.drag-preview.placed-preview[data-type="date"] .field-label {
+  color: #b45309;
+}
+
+.drag-preview.placed-preview[data-type="image"] {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #a855f7;
+  background-image: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%);
+}
+
+.drag-preview.placed-preview[data-type="image"] .field-label {
+  color: #7c3aed;
+}
+
+.drag-preview.placed-preview[data-type="radio"] {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #ec4899;
+  background-image: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%);
+}
+
+.drag-preview.placed-preview[data-type="radio"] .field-label {
+  color: #db2777;
+}
+
+.drag-preview .field-label {
+  color: white;
+}
+
+/* ===================================
+   Global Dragging State
+   =================================== */
+body.is-dragging {
+  cursor: grabbing !important;
+  user-select: none;
+}
+
+body.is-dragging * {
+  cursor: grabbing !important;
+}
+
+/* ===================================
+   Loading State
+   =================================== */
+.pdf-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--gray-500);
+  gap: var(--space-4);
+}
+
+.pdf-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--gray-200);
+  border-top-color: var(--primary-500);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===================================
+   Error State
+   =================================== */
+.pdf-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--error-500);
+  gap: var(--space-3);
+  text-align: center;
+  padding: var(--space-8);
+}
+
+.pdf-error-icon {
+  font-size: 3rem;
+  opacity: 0.8;
+}
+
+/* ===================================
+   Empty State
+   =================================== */
+.pdf-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: var(--gray-400);
+  gap: var(--space-4);
+  text-align: center;
+  padding: var(--space-8);
+  background: var(--gray-50);
+  border: 2px dashed var(--gray-300);
+  border-radius: var(--radius-lg);
+}
+
+/* ===================================
+   Responsive Adjustments
+   =================================== */
+@media (max-width: 768px) {
+  .pdf-container {
+    border-radius: var(--radius-md);
+    margin: 0 auto;
+    max-width: 100%;
+  }
+
+  .pdf-document {
+    gap: 16px;
+  }
+
+  .pdf-page-wrapper {
+    margin-bottom: 16px;
+  }
+
+  .draggable-field {
+    font-size: 0.65rem;
+    min-width: 50px;
+    min-height: 28px;
+  }
+
+  .resize-handle {
+    width: 20px;
+    height: 20px;
+    right: -10px;
+    bottom: -10px;
+  }
+
+  .field-label {
+    padding: var(--space-1);
+    font-size: 0.65rem;
+  }
+
+  .field-delete-btn {
+    width: 24px;
+    height: 24px;
+    top: -10px;
+    right: -10px;
+    font-size: 16px;
+  }
+
+  .drag-preview {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+    min-width: 80px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pdf-document {
+    gap: 12px;
+  }
+
+  .pdf-page-wrapper {
+    margin-bottom: 12px;
+  }
+
+  .draggable-field {
+    font-size: 0.6rem;
+    min-width: 40px;
+    min-height: 24px;
+  }
+
+  .resize-handle {
+    width: 24px;
+    height: 24px;
+    right: -12px;
+    bottom: -12px;
+  }
+
+  .field-delete-btn {
+    width: 26px;
+    height: 26px;
+    top: -11px;
+    right: -11px;
+  }
+}
+
+/* Touch-friendly adjustments */
+@media (pointer: coarse) {
+  .resize-handle {
+    width: 28px;
+    height: 28px;
+    right: -14px;
+    bottom: -14px;
+  }
+
+  .draggable-field {
+    min-height: 36px;
+  }
+
+  .field-delete-btn {
+    width: 28px;
+    height: 28px;
+    top: -12px;
+    right: -12px;
+    font-size: 18px;
+  }
+}
+
+/* ===================================
+   Reduced Motion
+   =================================== */
+@media (prefers-reduced-motion: reduce) {
+
+  .drag-preview,
+  .drop-indicator,
+  .draggable-field,
+  .resize-handle,
+  .field-delete-btn {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* ===================================
+   Print Styles
+   =================================== */
+@media print {
+
+  .resize-handle,
+  .field-delete-btn {
+    display: none;
+  }
+
+  .draggable-field {
+    border: 1px solid #333;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .drop-indicator {
+    display: none;
+  }
+}
