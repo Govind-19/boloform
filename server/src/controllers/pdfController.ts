@@ -153,11 +153,19 @@ export const signPdf = async (req: Request, res: Response) => {
             // Return full data URI so frontend can utilize it directly
             url: `data:application/pdf;base64,${signedPdfBase64}`,
             originalHash,
-            signedHash
+            signedHash,
+            debug: {
+                receivedBase64Length: pdfBase64 ? pdfBase64.length : 0,
+                usingFallback: !pdfBase64,
+                pdfBufferLength: pdfBuffer ? pdfBuffer.length : 0
+            }
         });
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Failed to sign PDF' });
+        res.status(500).json({
+            error: 'Failed to sign PDF',
+            details: error instanceof Error ? error.message : String(error)
+        });
     }
 };

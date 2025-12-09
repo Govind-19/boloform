@@ -415,6 +415,8 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file }) => {
             });
 
             const result = await response.json();
+            console.log("Sign Response:", result);
+
             if (result.success) {
                 setModalState({
                     isOpen: true,
@@ -431,6 +433,13 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file }) => {
 
                             <span className="hash-label">Signed Document Hash (SHA-256)</span>
                             <div className="hash-block">{result.signedHash}</div>
+
+                            {result.debug && (
+                                <div style={{ marginTop: '10px', fontSize: '0.8em', color: '#999' }}>
+                                    Debug: Sent {pdfBase64.length} chars. Server received {result.debug.receivedBase64Length}.
+                                    Fallback Used: {String(result.debug.usingFallback)}.
+                                </div>
+                            )}
                         </div>
                     ),
                     pdfUrl: result.url,
