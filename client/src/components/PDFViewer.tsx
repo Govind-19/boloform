@@ -373,7 +373,6 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file }) => {
             // Fetch the PDF file and convert to Base64
             const pdfResponse = await fetch(file); // Assuming 'file' is the URL or path to the PDF
             const pdfBlob = await pdfResponse.blob();
-            console.log("Fetched PDF Blob Type:", pdfBlob.type, "Size:", pdfBlob.size);
 
             const pdfBase64 = await new Promise<string>((resolve) => {
                 const reader = new FileReader();
@@ -417,7 +416,6 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file }) => {
             });
 
             const result = await response.json();
-            console.log("Sign Response:", result);
 
             if (result.success) {
                 setModalState({
@@ -436,15 +434,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file }) => {
                             <span className="hash-label">Signed Document Hash (SHA-256)</span>
                             <div className="hash-block">{result.signedHash}</div>
 
-                            {result.debug && (
-                                <div style={{ marginTop: '10px', fontSize: '0.8em', color: '#999', wordBreak: 'break-all' }}>
-                                    Debug: Sent {pdfBase64.length} chars. Server received {result.debug.receivedBase64Length}.
-                                    Fallback Used: {String(result.debug.usingFallback)}.
-                                    Body Keys: {JSON.stringify(result.debug.bodyKeys)}.
-                                    Type: {result.debug.contentType}.
-                                    Blob Type: {pdfBlob.type} ({pdfBlob.size}).
-                                </div>
-                            )}
+
                         </div>
                     ),
                     pdfUrl: result.url,
