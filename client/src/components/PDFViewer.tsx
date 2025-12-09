@@ -521,7 +521,31 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file }) => {
                         {modalState.pdfUrl && (
                             <button
                                 className="btn btn-primary"
-                                onClick={() => window.open(modalState.pdfUrl, '_blank')}
+                                onClick={() => {
+                                    if (modalState.pdfUrl) {
+                                        // Convert Data URI to Blob to avoid "Not allowed to navigate top frame to data URL"
+                                        try {
+                                            const dataUri = modalState.pdfUrl;
+                                            if (dataUri.startsWith('data:application/pdf;base64,')) {
+                                                const base64 = dataUri.split(',')[1];
+                                                const binaryString = window.atob(base64);
+                                                const len = binaryString.length;
+                                                const bytes = new Uint8Array(len);
+                                                for (let i = 0; i < len; i++) {
+                                                    bytes[i] = binaryString.charCodeAt(i);
+                                                }
+                                                const blob = new Blob([bytes], { type: 'application/pdf' });
+                                                const blobUrl = URL.createObjectURL(blob);
+                                                window.open(blobUrl, '_blank');
+                                            } else {
+                                                window.open(dataUri, '_blank');
+                                            }
+                                        } catch (e) {
+                                            console.error("Error opening PDF blob", e);
+                                            window.open(modalState.pdfUrl, '_blank');
+                                        }
+                                    }
+                                }}
                             >
                                 Open Signed PDF
                             </button>
