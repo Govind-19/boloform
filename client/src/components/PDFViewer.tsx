@@ -367,17 +367,50 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ file }) => {
 
     const handleSign = async () => {
         // Send all fields to backend
-        const docFields = fields;
+
 
         try {
+            // Fetch the PDF file and convert to Base64
+            const pdfResponse = await fetch(file); // Assuming 'file' is the URL or path to the PDF
+            const pdfBlob = await pdfResponse.blob();
+            const pdfBase64 = await new Promise<string>((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const base64 = (reader.result as string).split(',')[1];
+                    resolve(base64);
+                };
+                reader.readAsDataURL(pdfBlob);
+            });
+
             const response = await fetch('/api/pdf/sign', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    pdfId: 'sample',
-                    fields: docFields
+                    pdfBase64, // Send the PDF content
+                    pdfId: 'sample', // Still sending ID just in case
+                    signatures: fields.filter(item => item.type === 'signature').map(item => ({
+                        id: item.id,
+                        // Assuming 'content' property exists on FieldData for signature image data
+                        imageBase64: (item as any).content,
+                        x: item.x,
+                        y: item.y,
+                        width: item.width,
+                        height: item.height,
+                        page: item.page,
+                    })),
+                    fields: fields.map(item => ({
+                        id: item.id,
+                        type: item.type,
+                        x: item.x,
+                        y: item.y,
+                        width: item.width,
+                        height: item.height,
+                        page: item.page,
+                        // Assuming 'content' property exists on FieldData for other field types
+                        content: (item as any).content
+                    }))
                 })
             });
 

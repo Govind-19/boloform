@@ -6,7 +6,7 @@ import path from 'path';
 
 export const signPdf = async (req: Request, res: Response) => {
     try {
-        const { pdfId, signatures, fields } = req.body;
+        const { pdfId, signatures, fields, pdfBase64 } = req.body;
 
         // Load Original PDF
         // In serverless, we might not have access to client/public easily depending on bundle.
@@ -18,22 +18,28 @@ export const signPdf = async (req: Request, res: Response) => {
         // We will try a few paths.
 
         let pdfBuffer: Buffer;
-        const possiblePaths = [
-            path.join(__dirname, '../../../client/public/sample.pdf'), // Local dev
-            path.join(process.cwd(), 'client/dist/sample.pdf'), // Netlify build (maybe)
-            path.join(__dirname, '../../sample.pdf') // If we move it
-        ];
 
-        let foundPath = possiblePaths.find(p => fs.existsSync(p));
-
-        if (foundPath) {
-            pdfBuffer = fs.readFileSync(foundPath);
+        if (pdfBase64) {
+            // 1. Prefer Base64 content from Client
+            pdfBuffer = Buffer.from(pdfBase64, 'base64');
         } else {
-            // Fallback: If we can't find the file, create a new one to demonstrate it works.
-            // In a real app, user would upload the PDF to sign.
-            const newDoc = await PDFDocument.create();
-            newDoc.addPage([600, 400]);
-            pdfBuffer = Buffer.from(await newDoc.save());
+            // Fallback: Try to find sample.pdf relative to this file
+            const possiblePaths = [
+                path.join(__dirname, '../../../client/public/sample.pdf'), // Local dev
+                path.join(process.cwd(), 'client/dist/sample.pdf'), // Netlify build (maybe)
+                path.join(__dirname, '../../sample.pdf') // If we move it
+            ];
+
+            let foundPath = possiblePaths.find(p => fs.existsSync(p));
+
+            if (foundPath) {
+                pdfBuffer = fs.readFileSync(foundPath);
+            } else {
+                // Fallback: Create blank PDF
+                const newDoc = await PDFDocument.create();
+                newDoc.addPage([600, 400]);
+                pdfBuffer = Buffer.from(await newDoc.save());
+            }
         }
 
         // 2. Hash Original
