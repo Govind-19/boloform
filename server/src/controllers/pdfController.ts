@@ -1,3 +1,4 @@
+```typescript
 import { Request, Response } from 'express';
 import { PDFDocument, rgb } from 'pdf-lib';
 import crypto from 'crypto';
@@ -6,25 +7,6 @@ import path from 'path';
 
 export const signPdf = async (req: Request, res: Response) => {
     try {
-        try {
-            let body = req.body;
-
-            // Fix for Netlify Functions/serverless-http where body might be a string
-            if (typeof body === 'string') {
-                try {
-                    body = JSON.parse(body);
-                } catch (e) {
-                    console.error("Failed to parse body string:", e);
-                }
-            }
-
-            const { pdfId, signatures, fields, pdfBase64 } = body;
-
-            // Load Original PDF
-            // In serverless, we might not have access to client/public easily depending on bundle.
-            // Ideally, pass the PDF content from frontend or fetch from URL.
-            // Fallback: Try to read from local file if it exists, else throw or use empty/minimal PDF.
-            // For this demo, we'll try to find sample.pdf relative to this file, assuming it's bundled.
             // If running in Netlify Function, structure differs. 
             // Best approach for demo: Let's create a blank PDF if file not found, OR rely on a known path.
             // We will try a few paths.
@@ -163,7 +145,7 @@ export const signPdf = async (req: Request, res: Response) => {
             res.json({
                 success: true,
                 // Return full data URI so frontend can utilize it directly
-                url: `data:application/pdf;base64,${signedPdfBase64}`,
+                url: `data: application / pdf; base64, ${ signedPdfBase64 } `,
                 originalHash,
                 signedHash,
                 debug: {
