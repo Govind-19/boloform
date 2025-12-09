@@ -8,12 +8,18 @@ export const signPdf = async (req: Request, res: Response) => {
     try {
         let body = req.body;
 
-        // Fix for Netlify Functions/serverless-http where body might be a string
+        // Fix for Netlify Functions/serverless-http where body might be a string or Buffer
         if (typeof body === 'string') {
             try {
                 body = JSON.parse(body);
             } catch (e) {
                 console.error("Failed to parse body string:", e);
+            }
+        } else if (Buffer.isBuffer(body)) {
+            try {
+                body = JSON.parse(body.toString());
+            } catch (e) {
+                console.error("Failed to parse body buffer:", e);
             }
         }
 
